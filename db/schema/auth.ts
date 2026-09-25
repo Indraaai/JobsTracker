@@ -7,6 +7,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
+
 export const users = pgTable("users", {
   id: text("id")
     .primaryKey()
@@ -17,6 +18,7 @@ export const users = pgTable("users", {
     mode: "date",
   }),
   image: text("image"),
+  passwordHash: text("password_hash"),
 });
 
 export const accounts = pgTable(
@@ -71,4 +73,4 @@ export const verificationTokens = pgTable(
       columns: [table.identifier, table.token],
     }),
   ],
-);
+);

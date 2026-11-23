@@ -10,6 +10,7 @@ import {
     CheckSquare,
     LayoutDashboard,
     LogOut,
+    UserCheck,
     X,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -39,6 +40,11 @@ export const navigation = [
         name: "Tasks",
         href: "/tasks",
         icon: CheckSquare,
+    },
+    {
+        name: "Contacts",
+        href: "/contacts",
+        icon: UserCheck,
     },
 ];
 

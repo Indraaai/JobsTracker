@@ -1,39 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { APPLICATIONS_QUERY_KEY } from "@/hooks/use-applications";
+import type { ApplicationItem } from "@/lib/utils/application-helpers";
 
 type Company = {
     id: string;
     name: string;
 };
 
-type Application = {
-    id?: string;
-    companyId: string;
-    position: string;
-    status:
-    | "SAVED"
-    | "APPLIED"
-    | "SCREENING"
-    | "ASSESSMENT"
-    | "INTERVIEW"
-    | "OFFER"
-    | "ACCEPTED"
-    | "REJECTED"
-    | "WITHDRAWN";
-    jobUrl?: string | null;
-    employmentType?: string | null;
-    location?: string | null;
-    salaryMin?: number | null;
-    salaryMax?: number | null;
-    currency?: string | null;
-    appliedAt?: string | null;
-    deadline?: string | null;
-    notes?: string | null;
-};
-
 type ApplicationFormProps = {
-    application?: Application | null;
+    application?: ApplicationItem | null;
     onSuccess: () => void;
     onCancel: () => void;
 };
@@ -56,9 +34,12 @@ export default function ApplicationForm({
     onCancel,
 }: ApplicationFormProps) {
     const isEdit = Boolean(application?.id);
+    const queryClient = useQueryClient();
 
     const [companies, setCompanies] = useState<Company[]>([]);
     const [loadingCompanies, setLoadingCompanies] = useState(true);
+    const [isNewCompany, setIsNewCompany] = useState(false);
+    const [newCompanyName, setNewCompanyName] = useState("");
 
     const [form, setForm] = useState({
         companyId: application?.companyId ?? "",
@@ -73,10 +54,16 @@ export default function ApplicationForm({
             application?.salaryMax?.toString() ?? "",
         currency: application?.currency ?? "IDR",
         appliedAt: application?.appliedAt
-            ? application.appliedAt.slice(0, 10)
+            ? (typeof application.appliedAt === "string"
+                ? application.appliedAt
+                : new Date(application.appliedAt).toISOString()
+              ).slice(0, 10)
             : "",
         deadline: application?.deadline
-            ? application.deadline.slice(0, 10)
+            ? (typeof application.deadline === "string"
+                ? application.deadline
+                : new Date(application.deadline).toISOString()
+              ).slice(0, 10)
             : "",
         notes: application?.notes ?? "",
     });
@@ -97,6 +84,9 @@ export default function ApplicationForm({
                 }
 
                 setCompanies(result.data);
+                if (result.data.length === 0 && !isEdit) {
+                    setIsNewCompany(true);
+                }
             } catch (error) {
                 setError(
                     error instanceof Error
@@ -109,7 +99,7 @@ export default function ApplicationForm({
         }
 
         fetchCompanies();
-    }, []);
+    }, [isEdit]);
 
     function handleChange(
         e: React.ChangeEvent<
@@ -131,8 +121,40 @@ export default function ApplicationForm({
         setError("");
 
         try {
+            let targetCompanyId = form.companyId;
+
+            if (isNewCompany) {
+                if (!newCompanyName.trim()) {
+                    setError("Please enter the company name");
+                    setLoading(false);
+                    return;
+                }
+
+                const compRes = await fetch("/api/companies", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: newCompanyName.trim() }),
+                });
+
+                const compResult = await compRes.json();
+                if (!compRes.ok) {
+                    setError(compResult.message || "Failed to create company");
+                    setLoading(false);
+                    return;
+                }
+
+                targetCompanyId = compResult.data.id;
+                queryClient.invalidateQueries({ queryKey: ["companies"] });
+            } else {
+                if (!targetCompanyId) {
+                    setError("Please select a company or enter a new one");
+                    setLoading(false);
+                    return;
+                }
+            }
+
             const body = {
-                companyId: form.companyId,
+                companyId: targetCompanyId,
                 position: form.position,
                 status: form.status,
                 jobUrl: form.jobUrl,
@@ -172,6 +194,7 @@ export default function ApplicationForm({
                 return;
             }
 
+            queryClient.invalidateQueries({ queryKey: APPLICATIONS_QUERY_KEY });
             onSuccess();
         } catch {
             setError("Failed to connect to server");
@@ -203,41 +226,45 @@ export default function ApplicationForm({
 
             <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium">
-                        Company *
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-sm font-medium">Company *</label>
+                        <button
+                            type="button"
+                            onClick={() => setIsNewCompany(!isNewCompany)}
+                            className="text-xs text-primary font-semibold hover:underline cursor-pointer"
+                        >
+                            {isNewCompany ? "← Select existing" : "+ New Company"}
+                        </button>
+                    </div>
 
-                    <select
-                        name="companyId"
-                        value={form.companyId}
-                        onChange={handleChange}
-                        required
-                        disabled={loadingCompanies}
-                        className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-                    >
-                        <option value="">
-                            {loadingCompanies
-                                ? "Loading companies..."
-                                : "Select company"}
-                        </option>
-
-                        {companies.map((company) => (
-                            <option
-                                key={company.id}
-                                value={company.id}
-                            >
-                                {company.name}
+                    {isNewCompany ? (
+                        <input
+                            type="text"
+                            placeholder="Company name (e.g. Google, Gojek, Grab)"
+                            value={newCompanyName}
+                            onChange={(e) => setNewCompanyName(e.target.value)}
+                            required
+                            className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                        />
+                    ) : (
+                        <select
+                            name="companyId"
+                            value={form.companyId}
+                            onChange={handleChange}
+                            required={!isNewCompany}
+                            disabled={loadingCompanies}
+                            className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                        >
+                            <option value="">
+                                {loadingCompanies ? "Loading companies..." : "Select company"}
                             </option>
-                        ))}
-                    </select>
-
-                    {!loadingCompanies &&
-                        companies.length === 0 && (
-                            <p className="mt-1 text-xs text-muted-foreground">
-                                Add a company first before creating an
-                                application.
-                            </p>
-                        )}
+                            {companies.map((company) => (
+                                <option key={company.id} value={company.id}>
+                                    {company.name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
                 </div>
 
                 <div>

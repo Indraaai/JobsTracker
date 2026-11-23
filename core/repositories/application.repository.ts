@@ -1,24 +1,68 @@
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { applications } from "@/db/schema/application";
+import { applications, type Application } from "@/db/schema/application";
+import { companies } from "@/db/schema/companies";
 
-export async function findApplicationsByUserId(
-    userId: string,
-) {
+export type ApplicationWithCompany = Application & {
+    companyName: string | null;
+    companyLogo: string | null;
+};
+
+export async function findApplicationsByUserId(userId: string): Promise<ApplicationWithCompany[]> {
     return db
-        .select()
+        .select({
+            id: applications.id,
+            userId: applications.userId,
+            companyId: applications.companyId,
+            position: applications.position,
+            status: applications.status,
+            jobUrl: applications.jobUrl,
+            employmentType: applications.employmentType,
+            location: applications.location,
+            salaryMin: applications.salaryMin,
+            salaryMax: applications.salaryMax,
+            currency: applications.currency,
+            appliedAt: applications.appliedAt,
+            deadline: applications.deadline,
+            notes: applications.notes,
+            createdAt: applications.createdAt,
+            updatedAt: applications.updatedAt,
+            companyName: companies.name,
+            companyLogo: companies.logoUrl,
+        })
         .from(applications)
+        .leftJoin(companies, eq(applications.companyId, companies.id))
         .where(eq(applications.userId, userId))
-        .orderBy(applications.createdAt);
+        .orderBy(desc(applications.createdAt));
 }
 
 export async function findApplicationById(
     id: string,
     userId: string,
-) {
+): Promise<ApplicationWithCompany | null> {
     const result = await db
-        .select()
+        .select({
+            id: applications.id,
+            userId: applications.userId,
+            companyId: applications.companyId,
+            position: applications.position,
+            status: applications.status,
+            jobUrl: applications.jobUrl,
+            employmentType: applications.employmentType,
+            location: applications.location,
+            salaryMin: applications.salaryMin,
+            salaryMax: applications.salaryMax,
+            currency: applications.currency,
+            appliedAt: applications.appliedAt,
+            deadline: applications.deadline,
+            notes: applications.notes,
+            createdAt: applications.createdAt,
+            updatedAt: applications.updatedAt,
+            companyName: companies.name,
+            companyLogo: companies.logoUrl,
+        })
         .from(applications)
+        .leftJoin(companies, eq(applications.companyId, companies.id))
         .where(
             and(
                 eq(applications.id, id),

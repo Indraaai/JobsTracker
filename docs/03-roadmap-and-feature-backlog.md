@@ -8,7 +8,7 @@ Dokumen ini memetakan rencana kerja pengembangan (*development roadmap*) terperi
 
 ```
 +---------------------------------------------------------------------------------+
-| Phase 1: Core Completion (Interviews & Tasks)                 [SEGERA / Q1]     |
+| Phase 1: Core Completion (Interviews & Tasks)                 [SELESAI ✅]      |
 | - Implementasi skema & CRUD Interviews (jadwal, tipe, link meet, hasil)         |
 | - Implementasi skema & CRUD Tasks (to-do list rekrutmen, reminder, status)      |
 | - Integrasi data ke Dashboard Overview                                          |
@@ -16,23 +16,23 @@ Dokumen ini memetakan rencana kerja pengembangan (*development roadmap*) terperi
                                          |
                                          v
 +---------------------------------------------------------------------------------+
-| Phase 2: Enhanced Application Experience & Kanban Board       [PRIORITAS TINGGI]|
+| Phase 2: Enhanced Application Experience & Kanban Board       [SELESAI ✅]      |
 | - Tampilan Kanban Board (Drag-and-drop status lamaran)                          |
-| - Detail Page Lamaran (`/applications/[id]`) dengan activity timeline           |
-| - Filter & search canggih (berdasarkan rentang gaji, tipe kerja, dsb.)          |
+| - Detail Page Lamaran (`/applications/[id]`) 360° Cockpit View                  |
+| - Create Company On-The-Fly & Quick Action Shortcuts                            |
 +---------------------------------------------------------------------------------+
                                          |
                                          v
 +---------------------------------------------------------------------------------+
-| Phase 3: Recruiter Contacts & Networking Module               [PRIORITAS SEDANG]|
-| - Implementasi modul Contacts (`db/schema/contacts.ts`)                         |
+| Phase 3: Recruiter Contacts & Networking Module               [SELESAI ✅]      |
+| - Implementasi modul Contacts (`db/schema/contacts.ts` & CRUD lengkap)          |
 | - Hubungkan kontak recruiter dengan profil perusahaan dan lamaran               |
-| - Catatan interaksi dan riwayat komunikasi                                      |
+| - Global Command Palette (Ctrl+K / Cmd+K) pencarian instan & navigasi cepat     |
 +---------------------------------------------------------------------------------+
                                          |
                                          v
 +---------------------------------------------------------------------------------+
-| Phase 4: Document & Resume Management                         [PRIORITAS SEDANG]|
+| Phase 4: Document & Resume Management                         [PRIORITAS TINGGI]|
 | - Upload CV / Resume (multiple versions, misal: Frontend CV, Fullstack CV)      |
 | - Tautkan versi CV spesifik ke lamaran yang dikirim                             |
 | - Cover letter generator & catatan portofolio                                   |

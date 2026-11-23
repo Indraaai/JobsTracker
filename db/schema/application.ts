@@ -7,6 +7,7 @@ import {
     timestamp,
     uuid,
 } from "drizzle-orm/pg-core";
+import { type InferInsertModel, type InferSelectModel } from "drizzle-orm";
 
 import { users } from "./auth";
 import { companies } from "./companies";
@@ -103,3 +104,6 @@ export const applications = pgTable(
         ),
     ],
 );
+
+export type Application = InferSelectModel<typeof applications>;
+export type NewApplication = InferInsertModel<typeof applications>;

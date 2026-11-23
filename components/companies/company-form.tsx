@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { COMPANIES_QUERY_KEY } from "@/hooks/use-companies";
 
 type Company = {
     id?: string;
@@ -25,6 +27,7 @@ export default function CompanyForm({
     onCancel,
 }: CompanyFormProps) {
     const isEdit = Boolean(company?.id);
+    const queryClient = useQueryClient();
 
     const [form, setForm] = useState({
         name: company?.name ?? "",
@@ -79,6 +82,7 @@ export default function CompanyForm({
                 return;
             }
 
+            queryClient.invalidateQueries({ queryKey: COMPANIES_QUERY_KEY });
             onSuccess();
         } catch {
             setError("Failed to connect to server");

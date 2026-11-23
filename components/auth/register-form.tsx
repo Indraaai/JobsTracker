@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+    const router = useRouter();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -47,7 +49,7 @@ export default function RegisterForm() {
             }
             setSuccess("Registrasi berhasil. Anda akan diarahkan ke halaman login dalam 3 detik.");
             setTimeout(() => {
-                window.location.href = "/login";
+                router.push("/login");
             }, 3000);
 
             setName("");

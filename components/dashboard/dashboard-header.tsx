@@ -1,7 +1,9 @@
 "use client";
 
-import { Menu, BriefcaseBusiness } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, BriefcaseBusiness, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
+import CommandPalette from "@/components/dashboard/command-palette";
 
 interface DashboardHeaderProps {
     onOpenMobileMenu: () => void;
@@ -17,6 +19,20 @@ export default function DashboardHeader({
     user,
 }: DashboardHeaderProps) {
     const pathname = usePathname();
+    const [isCommandOpen, setIsCommandOpen] = useState(false);
+
+    // Global keyboard shortcut: Ctrl+K / Cmd+K
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+                e.preventDefault();
+                setIsCommandOpen((prev) => !prev);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     const name = user?.name ?? "User";
     const email = user?.email ?? "";
@@ -36,6 +52,7 @@ export default function DashboardHeader({
         if (path.startsWith("/companies")) return "Companies";
         if (path.startsWith("/interviews")) return "Interviews";
         if (path.startsWith("/tasks")) return "Tasks";
+        if (path.startsWith("/contacts")) return "Contacts";
         return "Dashboard";
     };
 
@@ -72,6 +89,23 @@ export default function DashboardHeader({
                 </div>
             </div>
 
+            {/* Center: Command Palette Trigger */}
+            <div className="flex-1 max-w-xs sm:max-w-sm mx-4">
+                <button
+                    type="button"
+                    onClick={() => setIsCommandOpen(true)}
+                    className="w-full flex items-center justify-between rounded-lg border bg-muted/30 hover:bg-muted/60 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors shadow-2xs"
+                >
+                    <div className="flex items-center gap-2 truncate">
+                        <Search className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">Search or jump to...</span>
+                    </div>
+                    <kbd className="hidden sm:inline-block rounded border bg-background px-1.5 py-0.5 text-[10px] font-mono font-medium text-muted-foreground shadow-2xs">
+                        Ctrl K
+                    </kbd>
+                </button>
+            </div>
+
             {/* Right side: user profile info */}
             <div className="flex items-center gap-3">
                 <div className="hidden sm:flex flex-col text-right">
@@ -92,6 +126,12 @@ export default function DashboardHeader({
                     {initials}
                 </div>
             </div>
+
+            {/* Command Palette Dialog */}
+            <CommandPalette
+                isOpen={isCommandOpen}
+                onClose={() => setIsCommandOpen(false)}
+            />
         </header>
     );
 }

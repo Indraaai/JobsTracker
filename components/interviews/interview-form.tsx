@@ -7,6 +7,9 @@ import {
     X,
     Loader2,
 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { INTERVIEWS_QUERY_KEY } from "@/hooks/use-interviews";
+import type { InterviewItem } from "@/lib/utils/interview-helpers";
 
 type ApplicationOption = {
     id: string;
@@ -17,35 +20,6 @@ type ApplicationOption = {
 type CompanyOption = {
     id: string;
     name: string;
-};
-
-export type InterviewItem = {
-    id?: string;
-    applicationId: string;
-    title: string;
-    stage:
-    | "HR_SCREENING"
-    | "TECHNICAL_TEST"
-    | "USER_INTERVIEW"
-    | "SYSTEM_DESIGN"
-    | "CULTURE_FIT"
-    | "FINAL_OFFER"
-    | "OTHER";
-    format:
-    | "ONLINE_GOOGLE_MEET"
-    | "ONLINE_ZOOM"
-    | "ONLINE_TEAMS"
-    | "PHONE_CALL"
-    | "ONSITE";
-    scheduledAt: string;
-    meetingUrl?: string | null;
-    location?: string | null;
-    notes?: string | null;
-    feedback?: string | null;
-    result?: "PENDING" | "PASSED" | "FAILED";
-    isCompleted?: boolean;
-    applicationPosition?: string;
-    companyName?: string;
 };
 
 type InterviewFormProps = {
@@ -80,7 +54,7 @@ const results = [
 ] as const;
 
 // Helper to format ISO date string for datetime-local input
-function toLocalDateTimeString(isoString?: string) {
+function toLocalDateTimeString(isoString?: Date | string | null) {
     if (!isoString) {
         // default to tomorrow at 10:00 AM
         const now = new Date();
@@ -104,6 +78,7 @@ export default function InterviewForm({
     onCancel,
 }: InterviewFormProps) {
     const isEdit = Boolean(interview?.id);
+    const queryClient = useQueryClient();
 
     const [applications, setApplications] = useState<ApplicationOption[]>([]);
     const [companies, setCompanies] = useState<CompanyOption[]>([]);
@@ -211,6 +186,7 @@ export default function InterviewForm({
                 throw new Error(result.message || "Failed to save interview");
             }
 
+            queryClient.invalidateQueries({ queryKey: INTERVIEWS_QUERY_KEY });
             onSuccess();
         } catch (err) {
             setError(err instanceof Error ? err.message : "Something went wrong");

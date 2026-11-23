@@ -6,6 +6,7 @@ import {
     unique,
     index,
 } from "drizzle-orm/pg-core";
+import { type InferInsertModel, type InferSelectModel } from "drizzle-orm";
 
 import { users } from "./auth";
 
@@ -57,3 +58,6 @@ export const companies = pgTable(
         index("companies_name_idx").on(table.name),
     ],
 );
+
+export type Company = InferSelectModel<typeof companies>;
+export type NewCompany = InferInsertModel<typeof companies>;

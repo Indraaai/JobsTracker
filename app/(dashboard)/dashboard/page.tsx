@@ -134,13 +134,15 @@ export default async function DashboardPage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-                {stats.map((stat) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-3.5">
+                {stats.map((stat, idx) => {
                     const Icon = stat.icon;
                     return (
                         <div
                             key={stat.title}
-                            className="relative overflow-hidden rounded-xl border bg-background p-5 shadow-xs transition-all hover:shadow-sm"
+                            className={`relative overflow-hidden rounded-xl border bg-background p-4 sm:p-5 shadow-xs transition-all hover:shadow-sm ${
+                                idx === 4 ? "col-span-2 sm:col-span-1" : ""
+                            }`}
                         >
                             <div className="flex items-center justify-between">
                                 <span className="text-xs sm:text-sm font-medium text-muted-foreground">

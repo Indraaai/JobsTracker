@@ -144,8 +144,8 @@ export default function ApplicationList({
             </div>
 
             {/* Filter Tabs & Search Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
-                <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
                     {applicationStatuses.map((status) => {
                         const isActive = filter === status;
                         return (
@@ -223,8 +223,8 @@ export default function ApplicationList({
                 />
             ) : (
                 /* Table View */
-                <div className="overflow-x-auto rounded-xl border bg-background shadow-xs">
-                    <table className="w-full text-left border-collapse">
+                <div className="overflow-x-auto rounded-xl border bg-background shadow-xs -mx-4 sm:mx-0">
+                    <table className="w-full min-w-[620px] text-left border-collapse">
                         <thead>
                             <tr className="border-b bg-muted/40 text-xs font-semibold text-muted-foreground">
                                 <th className="px-4 py-3">Position & Company</th>
@@ -255,17 +255,21 @@ export default function ApplicationList({
 
             {/* Modal: Application Form */}
             {showForm && (
-                <ApplicationForm
-                    application={selectedApplication}
-                    onSuccess={() => {
-                        setShowForm(false);
-                        setSelectedApplication(null);
-                    }}
-                    onCancel={() => {
-                        setShowForm(false);
-                        setSelectedApplication(null);
-                    }}
-                />
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border bg-background p-4 sm:p-6 shadow-xl">
+                        <ApplicationForm
+                            application={selectedApplication}
+                            onSuccess={() => {
+                                setShowForm(false);
+                                setSelectedApplication(null);
+                            }}
+                            onCancel={() => {
+                                setShowForm(false);
+                                setSelectedApplication(null);
+                            }}
+                        />
+                    </div>
+                </div>
             )}
 
             {/* Modal: Quick Schedule Interview Shortcut */}

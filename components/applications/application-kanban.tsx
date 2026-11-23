@@ -124,7 +124,7 @@ export default function ApplicationKanban({
     };
 
     return (
-        <div className="flex gap-4 overflow-x-auto pb-6 pt-2">
+        <div className="flex gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0">
             {kanbanColumns.map((col) => {
                 const colApps = applications.filter((a) =>
                     col.statuses.includes(a.status),
@@ -139,7 +139,7 @@ export default function ApplicationKanban({
                         onDragOver={(e) => handleDragOver(e, col.id)}
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, targetStatus)}
-                        className={`flex w-72 shrink-0 flex-col rounded-2xl border bg-muted/20 p-3 transition-colors ${
+                        className={`flex w-[82vw] max-w-[300px] sm:w-72 shrink-0 snap-center flex-col rounded-2xl border bg-muted/20 p-3 transition-colors ${
                             isOver ? "border-primary bg-primary/5 ring-2 ring-primary/20" : ""
                         }`}
                     >

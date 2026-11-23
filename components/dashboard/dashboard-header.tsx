@@ -90,15 +90,17 @@ export default function DashboardHeader({
             </div>
 
             {/* Center: Command Palette Trigger */}
-            <div className="flex-1 max-w-xs sm:max-w-sm mx-4">
+            <div className="flex items-center mx-2 sm:mx-4 sm:flex-1 sm:max-w-sm">
                 <button
                     type="button"
                     onClick={() => setIsCommandOpen(true)}
-                    className="w-full flex items-center justify-between rounded-lg border bg-muted/30 hover:bg-muted/60 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors shadow-2xs"
+                    className="flex items-center justify-between rounded-lg border bg-muted/30 hover:bg-muted/60 p-2 sm:px-3 sm:py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors shadow-2xs w-auto sm:w-full"
+                    title="Search or jump to... (Ctrl+K)"
+                    aria-label="Search or jump to"
                 >
                     <div className="flex items-center gap-2 truncate">
-                        <Search className="h-3.5 w-3.5 shrink-0" />
-                        <span className="truncate">Search or jump to...</span>
+                        <Search className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0" />
+                        <span className="hidden sm:inline truncate">Search or jump to...</span>
                     </div>
                     <kbd className="hidden sm:inline-block rounded border bg-background px-1.5 py-0.5 text-[10px] font-mono font-medium text-muted-foreground shadow-2xs">
                         Ctrl K

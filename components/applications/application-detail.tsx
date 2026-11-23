@@ -176,7 +176,7 @@ export default function ApplicationDetail({
             </div>
 
             {/* Header Hero Card */}
-            <div className="rounded-xl border bg-card p-6 shadow-xs">
+            <div className="rounded-xl border bg-card p-4 sm:p-6 shadow-xs">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-start gap-4">
                         {app.companyLogo ? (
@@ -256,11 +256,11 @@ export default function ApplicationDetail({
                 </div>
 
                 {/* Interactive Status Pipeline Stepper */}
-                <div className="mt-8 pt-6 border-t">
+                <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t">
                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
                         Pipeline Stage (Click to fast-forward stage)
                     </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <div className="flex flex-wrap sm:grid sm:grid-cols-5 gap-2">
                         {STAGES.map((stage, idx) => {
                             const isCurrent = app.status === stage;
                             const isPassed =
@@ -271,7 +271,7 @@ export default function ApplicationDetail({
                                     key={stage}
                                     type="button"
                                     onClick={() => handleStageChange(stage)}
-                                    className={`flex items-center justify-center gap-2 rounded-lg py-2 px-3 text-xs font-bold transition-all ${
+                                    className={`flex-1 min-w-[110px] sm:min-w-0 flex items-center justify-center gap-1.5 rounded-lg py-2 px-2.5 text-xs font-bold transition-all ${
                                         isCurrent
                                             ? "bg-primary text-primary-foreground shadow-xs ring-2 ring-primary/30"
                                             : isPassed

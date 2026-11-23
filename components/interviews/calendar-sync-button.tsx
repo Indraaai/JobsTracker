@@ -75,7 +75,7 @@ export default function CalendarSyncButton({
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 z-50 mt-1.5 w-52 rounded-xl border bg-card p-1.5 shadow-xl animate-in fade-in-0 zoom-in-95 duration-100">
+                <div className="absolute right-0 sm:right-auto sm:left-0 z-50 mt-1.5 w-52 max-w-[calc(100vw-2.5rem)] rounded-xl border bg-card p-1.5 shadow-xl animate-in fade-in-0 zoom-in-95 duration-100">
                     <button
                         type="button"
                         onClick={handleGoogleCalendar}
